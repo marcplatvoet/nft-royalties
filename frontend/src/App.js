@@ -6,30 +6,24 @@ import { Navbar, Container, Row, Col, Button, Alert } from "react-bootstrap";
 import Chain from "./components/chain";
 import About from "./pages/about";
 import ContactUs from "./pages/contactus";
-import NFTPage from "./pages/nftpage";
-import { getTokenBlockchain, getAmount } from "./components/token";
-import addresses from "./contracts/addresses.json";
+import Artist from "./pages/artist";
+import TransferTokens from "./pages/transfertokens";
+import { getTokenBlockchain } from "./components/token";
 
 function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isLogged, setIsLogged] = useState(false);
   const [currentChainID, setCurrentChainID] = useState(-1);
   const [page, setPage] = useState("");
-  const [token, setToken] = useState(undefined);
-  const [nfttoken, setNftToken] = useState(undefined);
+  const [mytoken, setMyToken] = useState(undefined);
   const [signerAddress, setSignerAddress] = useState(undefined);
-  const [amountAdmin, setAmountAdmin] = useState(0);
-  const [amountArtist, setAmountArtist] = useState(0);
 
   useEffect(() => {
     const init = async () => {
       try {
-        const { signerAddress, token, nfttoken } = await getTokenBlockchain();
-        setToken(token);
-        setNftToken(nfttoken);
+        const { signerAddress, mytoken } = await getTokenBlockchain();
+        setMyToken(mytoken);
         setSignerAddress(signerAddress);
-        setAmountAdmin(await getAmount(token, addresses.admin));
-        setAmountArtist(await getAmount(token, addresses.artist));
       } catch (e) {
         console.log(e);
       }
@@ -79,6 +73,8 @@ function App() {
       });
       setIsLogged(true);
       setCurrentAccount(accounts[0]);
+
+      console.log(accounts);
       return accounts[0];
     } catch (err) {
       if (err.code === 4001) {
@@ -167,6 +163,10 @@ function App() {
 
   const [messages, setMessage] = useState([]);
 
+  const addMessage = (item) => {
+    setMessage(item);
+  };
+
   const Message = (props) => {
     const [show, setShow] = useState(true);
 
@@ -196,7 +196,7 @@ function App() {
     setPage(navpage);
   }
 
-  if (typeof token === "undefined" || typeof nfttoken === "undefined") {
+  if (typeof mytoken === "undefined") {
     return "Loading...";
   }
 
@@ -222,10 +222,10 @@ function App() {
           <button
             bg="dark"
             className="btn btn-dark"
-            onClick={() => onLinkClick("nft")}
+            onClick={() => onLinkClick("transfertokens")}
             variant="dark"
           >
-            NFT
+            Transfer Tokens
           </button>
           <button
             bg="dark"
@@ -233,15 +233,15 @@ function App() {
             onClick={() => onLinkClick("nfttest")}
             variant="dark"
           >
-            NFT Test
+            Mint Tokens
           </button>
           <button
             bg="dark"
             className="btn btn-dark"
-            onClick={() => onLinkClick("contactus")}
+            onClick={() => onLinkClick("artist")}
             variant="dark"
           >
-            Contact us
+            Artist
           </button>
         </Navbar.Brand>
         <div>
@@ -273,14 +273,19 @@ function App() {
           <Col>
             {page === "about" ? <About /> : null}
             {page === "contactus" ? <ContactUs /> : null}
-            {page === "nft" ? (
-              <NFTPage
+            {page === "transfertokens" ? (
+              <TransferTokens
                 signerAddress={signerAddress}
-                nfttoken={nfttoken}
-                token={token}
-                amountAdmin={amountAdmin}
-                amountArtist={amountArtist}
+                mytoken={mytoken}
                 currentAccount={currentAccount}
+              />
+            ) : null}
+            {page === "artist" ? (
+              <Artist
+                signerAddress={signerAddress}
+                mytoken={mytoken}
+                currentAccount={currentAccount}
+                addMessage={addMessage}
               />
             ) : null}
           </Col>
