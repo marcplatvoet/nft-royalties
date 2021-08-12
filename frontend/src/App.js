@@ -278,6 +278,7 @@ function App() {
                 signerAddress={signerAddress}
                 mytoken={mytoken}
                 currentAccount={currentAccount}
+                addMessage={addMessage}
               />
             ) : null}
             {page === "artist" ? (

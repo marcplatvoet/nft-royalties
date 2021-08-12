@@ -9,15 +9,11 @@ const artist = ({ signerAddress, mytoken, currentAccount, addMessage }) => {
   const onClickFunction = async (e) => {
     e.preventDefault();
     getBalance(mytoken, e.target.elements.to.value);
-    //const from = e.target.elements.from.value;
+
     const to = e.target.elements.to.value;
     const amount = e.target.elements.amount.value;
     if (amount < 10) {
-      // console.log(mytoken);
-      // console.log(from);
-      // console.log(to);
-      // console.log(amount);
-      await mytoken.addRoyaltiesAccount(to, ethers.utils.parseEther(amount));
+      await mytoken.addRoyaltiesAccount(to, amount);
     } else {
       const message = [
         {
@@ -28,11 +24,6 @@ const artist = ({ signerAddress, mytoken, currentAccount, addMessage }) => {
       ];
       addMessage(message);
     }
-
-    // const data = {
-    //   address: to,
-    // };
-    // fs.writeFileSync("../contracts/artist.json", JSON.stringify(data));
   };
 
   return (

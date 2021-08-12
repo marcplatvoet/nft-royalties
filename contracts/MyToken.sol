@@ -83,9 +83,8 @@ contract MyToken {
         require(balances[msg.sender] >= value,'balance too low');
         balances[msg.sender] -= value;
         uint royaltyval = (value/100) * _percentage;
-        //console.log(royaltyval);
         balances[_artist] += royaltyval;
-        balances[to] += value - royaltyval;
+        balances[to] += (value - royaltyval);
         emit Transfer(msg.sender, to, value);
         return true;
     }
